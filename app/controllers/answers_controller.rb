@@ -22,21 +22,6 @@ class AnswersController < ApplicationController
     end
   end
 
-  def edit; end
-
-  def update
-    if @answer.update(answer_params)
-      redirect_to @answer
-    else
-      render :edit
-    end
-  end
-
-  def destroy
-    @answer.destroy
-    redirect_to question_answers_path(@answer.question)
-  end
-
   private
 
   def find_question
