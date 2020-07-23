@@ -1,6 +1,5 @@
 class QuestionsController < ApplicationController
   before_action :find_question, only: %i[show edit update destroy]
-  rescue_from ActiveRecord::RecordNotFound, with: :resque_with_question_not_found
 
   def index
     @questions = Question.all
@@ -30,9 +29,4 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(:title, :body)
   end
-
-  def resque_with_question_not_found
-    render status: 404, plain: 'question not found'
-  end
-
 end

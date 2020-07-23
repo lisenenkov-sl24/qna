@@ -3,8 +3,6 @@ require 'rails_helper'
 RSpec.describe QuestionsController, type: :controller do
   let(:question) { create :question }
 
-  it { should rescue_from(ActiveRecord::RecordNotFound).with(:resque_with_question_not_found) }
-
   describe 'GET #index' do
     let(:questions) { create_list :question, 3 }
 

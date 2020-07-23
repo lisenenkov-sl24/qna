@@ -1,7 +1,6 @@
 class AnswersController < ApplicationController
   before_action :find_question, only: %i[index new create]
   before_action :find_answer, only: %i[show edit update destroy]
-  rescue_from ActiveRecord::RecordNotFound, with: :resque_with_answer_not_found
 
   def index
     @answers = @question.answers
@@ -34,9 +33,5 @@ class AnswersController < ApplicationController
 
   def answer_params
     params.require(:answer).permit(:text)
-  end
-
-  def resque_with_answer_not_found
-    render status: 404, plain: 'answer not found'
   end
 end

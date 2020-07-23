@@ -4,8 +4,6 @@ RSpec.describe AnswersController, type: :controller do
   let(:question) { create :question }
   let(:answer) { create :answer, question: question }
 
-  it { should rescue_from(ActiveRecord::RecordNotFound).with(:resque_with_answer_not_found) }
-
   describe 'GET #index' do
     let(:answers) { create_list :answer, 3, question: question }
     before { get :index, params: { question_id: question } }
