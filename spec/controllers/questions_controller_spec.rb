@@ -18,7 +18,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #show' do
-    before { get :show, params: {id: question} }
+    before { get :show, params: { id: question } }
 
     it 'assigns @question' do
       expect(assigns(:question)).to eq question
@@ -44,7 +44,7 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe 'POST #create' do
     context 'with valid params' do
-      let(:create_request) { post :create, params: {question: attributes_for(:question)} }
+      let(:create_request) { post :create, params: { question: attributes_for(:question) } }
 
       it 'saves question to db' do
         expect { create_request }.to change(Question, :count).by(1)
@@ -56,7 +56,7 @@ RSpec.describe QuestionsController, type: :controller do
     end
 
     context 'with invalid params' do
-      let(:create_request) { post :create, params: {question: attributes_for(:question, :invalid_title)} }
+      let(:create_request) { post :create, params: { question: attributes_for(:question, :invalid_title) } }
 
       it 'not saves question to db' do
         expect { create_request }.to_not change(Question, :count)
@@ -64,6 +64,32 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'rerenders new view' do
         expect(create_request).to render_template :new
+      end
+    end
+  end
+
+  describe 'POST #createanswer' do
+    context 'with valid params' do
+      let(:create_request) { post :createanswer, params: { id: question, answer: attributes_for(:answer) } }
+
+      it 'saves answer to db' do
+        expect { create_request }.to change { question.answers.count }.by(1)
+      end
+
+      it 'redirects to question' do
+        expect(create_request).to redirect_to assigns(:question)
+      end
+    end
+
+    context 'with invalid params' do
+      let(:create_request) { post :createanswer, params: { id: question, answer: attributes_for(:answer, :invalid_text) } }
+
+      it 'not saves answer to db' do
+        expect { create_request }.to_not change(Answer, :count)
+      end
+
+      it 'rerenders new view' do
+        expect(create_request).to render_template :show
       end
     end
   end
