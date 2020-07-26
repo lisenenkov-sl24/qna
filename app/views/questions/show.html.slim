@@ -4,11 +4,13 @@ div
 div
   h4 Body
   = @question.body
-  table
+  table class='answers'
     - @question.answers.each do |answer|
-      tr
+      tr data-id=answer.id
         td =answer.text
-
+        td
+          -if answer.author == current_user
+            = link_to 'Delete', deleteanswer_question_path(@question, answer_id: answer.id), method: :delete, data: { confirm: 'Delete answer?' }
 = render 'shared/errors', resource: @answer
 -if user_signed_in?
   = form_with model: @answer, url: createanswer_question_path(@question, @answer), local: true do |f|

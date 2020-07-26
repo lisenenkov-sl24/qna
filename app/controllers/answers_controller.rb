@@ -15,6 +15,7 @@ class AnswersController < ApplicationController
 
   def create
     @answer = @question.answers.build(answer_params)
+    @answer.author = current_user
     if @answer.save
       redirect_to @answer
     else

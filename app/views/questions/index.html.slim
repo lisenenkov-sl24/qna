@@ -1,5 +1,13 @@
-ul
+table
   - @questions.each do |q|
-    li
-      = link_to q.title, question_path(q)
-=link_to 'Ask question', new_question_path
+    tr
+      th Title
+      th colspan='2' Actions
+    tr data-id=q.id
+      td = q.title
+      td = link_to 'Show', question_path(q)
+      td
+        - if q.author == current_user
+          = link_to 'Delete', question_path(q), method: :delete, data: { confirm: 'Delete question?' }
+
+= link_to 'Ask question', new_question_path

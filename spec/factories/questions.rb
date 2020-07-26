@@ -20,7 +20,7 @@ FactoryBot.define do
       transient { answers_count { 5 } }
 
       after :create do |q, v|
-        create_list :answer, v.answers_count, question: q
+        create_list :answer, v.answers_count, question: q, author: q.author
       end
     end
   end

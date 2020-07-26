@@ -2,15 +2,15 @@ require 'rails_helper'
 
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create :user }
-  let(:question) { create :question }
-  let(:answer) { create :answer, question: question }
+  let(:question) { create :question, author: user }
+  let(:answer) { create :answer, question: question, author: user }
 
   describe 'GET #index' do
-    let(:answers) { create_list :answer, 3, question: question }
+    let(:answers) { create_list :answer, 3, question: question, author: user }
     before { get :index, params: { question_id: question } }
 
     it 'populates answers list' do
-      create :question_with_answers, answers_count: 2
+      create :question_with_answers, answers_count: 2, author: user
       expect(assigns(:answers)).to match_array(answers)
     end
 

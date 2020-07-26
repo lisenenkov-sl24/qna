@@ -2,7 +2,8 @@ require 'rails_helper'
 
 feature 'User can view question' do
 
-  given(:question) { create :question_with_answers, answers_count: 10 }
+  given(:user) { create :user }
+  given(:question) { create :question_with_answers, answers_count: 10, author: user }
 
   describe 'view' do
 
