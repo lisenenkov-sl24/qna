@@ -10,10 +10,11 @@ div
         td =answer.text
 
 = render 'shared/errors', resource: @answer
-= form_with model: @answer, url: createanswer_question_path(@question, @answer), local: true do |f|
-  div class='form-group'
-    = f.label :text, 'Answer'
-    br
-    = f.text_area :text
-  div class='form-group'
-    = f.submit 'Submit answer'
+-if user_signed_in?
+  = form_with model: @answer, url: createanswer_question_path(@question, @answer), local: true do |f|
+    div class='form-group'
+      = f.label :text, 'Answer'
+      br
+      = f.text_area :text
+    div class='form-group'
+      = f.submit 'Submit answer'

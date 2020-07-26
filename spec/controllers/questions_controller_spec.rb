@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
+  let(:user) { create :user }
   let(:question) { create :question }
 
   describe 'GET #index' do
@@ -31,6 +32,7 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'GET #new' do
+    before { login user }
     before { get :new }
 
     it 'assigns @question to new record' do
@@ -43,6 +45,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #create' do
+    before { login user }
+
     context 'with valid params' do
       let(:create_request) { post :create, params: { question: attributes_for(:question) } }
 
@@ -69,6 +73,8 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe 'POST #createanswer' do
+    before { login user }
+
     context 'with valid params' do
       let(:create_request) { post :createanswer, params: { id: question, answer: attributes_for(:answer) } }
 

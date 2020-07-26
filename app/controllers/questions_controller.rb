@@ -1,5 +1,6 @@
 class QuestionsController < ApplicationController
   before_action :find_question, only: %i[show edit update destroy createanswer]
+  before_action :authenticate_user!, only: %i[new create createanswer]
 
   def index
     @questions = Question.all
