@@ -9,11 +9,11 @@ div
       tr data-id=answer.id
         td =answer.text
         td
-          -if answer.author == current_user
-            = link_to 'Delete', deleteanswer_question_path(@question, answer_id: answer.id), method: :delete, data: { confirm: 'Delete answer?' }
+          -if current_user&.author_of? answer
+            = link_to 'Delete', answer_path(id: answer), method: :delete, data: { confirm: 'Delete answer?' }
 = render 'shared/errors', resource: @answer
 -if user_signed_in?
-  = form_with model: @answer, url: createanswer_question_path(@question, @answer), local: true do |f|
+  = form_with model: [@question, @answer], local: true do |f|
     div class='form-group'
       = f.label :text, 'Answer'
       br

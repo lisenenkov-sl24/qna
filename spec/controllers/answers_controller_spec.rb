@@ -5,48 +5,9 @@ RSpec.describe AnswersController, type: :controller do
   let(:question) { create :question, author: user }
   let(:answer) { create :answer, question: question, author: user }
 
-  describe 'GET #index' do
-    let(:answers) { create_list :answer, 3, question: question, author: user }
-    before { get :index, params: { question_id: question } }
-
-    it 'populates answers list' do
-      create :question_with_answers, answers_count: 2, author: user
-      expect(assigns(:answers)).to match_array(answers)
-    end
-
-    it 'renders index view' do
-      expect(response).to render_template :index
-    end
-  end
-
-  describe 'GET #show' do
-    before { get :show, params: { id: answer } }
-
-    it 'assigns @answer' do
-      expect(assigns(:answer)).to eq answer
-    end
-
-    it 'renders show view' do
-      expect(response).to render_template :show
-    end
-  end
-
-  describe 'GET #new' do
-    before { login user }
-    before { get :new, params: { question_id: question } }
-
-    it 'assigns @answer to new record of current question' do
-      expect(assigns(:answer)).to be_a_new Answer
-      expect(assigns(:answer)).to have_attributes question: question
-    end
-
-    it 'renders new view' do
-      expect(response).to render_template :new
-    end
-  end
+  before { login user }
 
   describe 'POST #create' do
-    before { login user }
 
     context 'with valid params' do
       let(:create_request) { post :create, params: { question_id: question, answer: attributes_for(:answer) } }
@@ -55,8 +16,13 @@ RSpec.describe AnswersController, type: :controller do
         expect { create_request }.to change { question.answers.count }.by(1)
       end
 
-      it 'redirects to answer' do
-        expect(create_request).to redirect_to assigns(:answer)
+      it 'sets current user as author' do
+        create_request
+        expect(Answer.order(:id).last).to have_attributes(author: user)
+      end
+
+      it 'redirects to question' do
+        expect(create_request).to redirect_to question_path(question)
       end
     end
 
@@ -67,9 +33,39 @@ RSpec.describe AnswersController, type: :controller do
         expect { create_request }.to_not change(Answer, :count)
       end
 
-      it 'rerenders new view' do
-        expect(create_request).to render_template :new
+      it 'rerenders question view' do
+        expect(create_request).to render_template 'questions/show'
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    context 'by author' do
+      let!(:answer) { create :answer, question: question, author: user }
+      let(:delete_request) { delete :destroy, params: { id: answer } }
+
+      it 'deletes answer from db' do
+        expect { delete_request }.to change(question.answers, :count).by(-1)
+      end
+
+      it 'redirects to question' do
+        expect(delete_request).to redirect_to question_path(question)
+      end
+    end
+
+    context 'by other user' do
+      let(:user2) { create :user }
+      let!(:answer) { create :answer, question: question, author: user2 }
+      let(:delete_request) { delete :destroy, params: { id: answer } }
+
+      it 'not deletes answer from db' do
+        expect { delete_request }.to_not change(question.answers, :count)
+      end
+
+      it 'redirects to question' do
+        expect(delete_request).to redirect_to question_path(question)
+      end
+    end
+  end
+
 end

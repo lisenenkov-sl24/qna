@@ -54,6 +54,11 @@ RSpec.describe QuestionsController, type: :controller do
         expect { create_request }.to change(Question, :count).by(1)
       end
 
+      it 'sets current user as author' do
+        create_request
+        expect(Question.order(:id).last).to have_attributes(author: user)
+      end
+
       it 'redirects to question' do
         expect(create_request).to redirect_to assigns(:question)
       end
@@ -72,45 +77,34 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe 'POST #createanswer' do
-    before { login user }
-
-    context 'with valid params' do
-      let(:create_request) { post :createanswer, params: { id: question, answer: attributes_for(:answer) } }
-
-      it 'saves answer to db' do
-        expect { create_request }.to change { question.answers.count }.by(1)
-      end
-
-      it 'redirects to question' do
-        expect(create_request).to redirect_to assigns(:question)
-      end
-    end
-
-    context 'with invalid params' do
-      let(:create_request) { post :createanswer, params: { id: question, answer: attributes_for(:answer, :invalid_text) } }
-
-      it 'not saves answer to db' do
-        expect { create_request }.to_not change(Answer, :count)
-      end
-
-      it 'rerenders new view' do
-        expect(create_request).to render_template :show
-      end
-    end
-  end
-
   describe 'DELETE #destroy' do
-    before { login user }
-    let!(:question) { create :question, author: user }
-    let(:delete_request) { delete :destroy, params: { id: question } }
+    context 'by author' do
+      before { login user }
+      let!(:question) { create :question, author: user }
+      let(:delete_request) { delete :destroy, params: { id: question } }
 
-    it 'deletes question from db' do
-      expect { delete_request }.to change(Question, :count).by(-1)
+      it 'deletes question from db' do
+        expect { delete_request }.to change(Question, :count).by(-1)
+      end
+
+      it 'redirects to questions' do
+        expect(delete_request).to redirect_to questions_path
+      end
     end
 
-    it 'redirects to questions' do
-      expect(delete_request).to redirect_to questions_path
+    context 'by other user' do
+      before { login user }
+      let(:user2) { create :user }
+      let!(:question) { create :question, author: user2 }
+      let(:delete_request) { delete :destroy, params: { id: question } }
+
+      it 'not question answer from db' do
+        expect { delete_request }.to_not change(Question, :count)
+      end
+
+      it 'redirects to questions' do
+        expect(delete_request).to redirect_to questions_path
+      end
     end
   end
 end

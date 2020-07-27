@@ -7,7 +7,7 @@ table
       td = q.title
       td = link_to 'Show', question_path(q)
       td
-        - if q.author == current_user
+        - if current_user&.author_of? q
           = link_to 'Delete', question_path(q), method: :delete, data: { confirm: 'Delete question?' }
 
 = link_to 'Ask question', new_question_path

@@ -27,27 +27,4 @@ feature 'User can view question' do
     expect(has_button? 'Submit answer').to be_falsey
   end
 
-  describe 'and create answer from question page' do
-    given(:user) { create :user }
-
-    background do
-      sign_in(user)
-      visit question_path(question)
-    end
-
-    scenario 'saves correct answer' do
-      answer_text = "Answer text #{SecureRandom.uuid}"
-      fill_in 'Answer', with: answer_text
-      click_on 'Submit answer'
-
-      expect(page).to have_text answer_text
-    end
-
-    scenario 'blocks an answer with errors' do
-      click_on 'Submit answer'
-
-      expect(page).to have_text 'Text can\'t be blank'
-    end
-  end
-
 end

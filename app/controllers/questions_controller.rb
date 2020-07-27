@@ -1,13 +1,13 @@
 class QuestionsController < ApplicationController
-  before_action :find_question, only: %i[show edit update destroy createanswer deleteanswer]
-  before_action :authenticate_user!, only: %i[new create createanswer deleteanswer]
+  before_action :authenticate_user!, only: %i[new create destroy]
+  before_action :find_question, only: %i[show edit update destroy]
 
   def index
     @questions = Question.all
   end
 
   def show
-    @answer = @question.answers.new
+    @answer = Answer.new
   end
 
   def new
@@ -24,28 +24,8 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def createanswer
-    @answer = @question.answers.new(answer_params)
-    @answer.author = current_user
-    if @answer.save
-      redirect_to @question, notice: 'Your answer successfully created.'
-    else
-      render :show
-    end
-  end
-
-  def deleteanswer
-    @answer = @question.answers.find(params[:answer_id])
-    if @answer.author == current_user
-      @answer.destroy
-      redirect_to @question, notice: 'Answer deleted.'
-    else
-      redirect_to @question, notice: 'Answer can\'t be deleted.'
-    end
-  end
-
   def destroy
-    if @question.author == current_user
+    if current_user.author_of? @question
       @question.destroy
       redirect_to questions_path, notice: 'Question deleted.'
     else

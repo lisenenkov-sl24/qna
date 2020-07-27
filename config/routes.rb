@@ -4,10 +4,6 @@ Rails.application.routes.draw do
   root 'questions#index'
 
   resources :questions do
-    member do
-      post 'createanswer'
-      delete 'deleteanswer'
-    end
-    resources :answers, shallow: true
+    resources :answers, shallow: true, only: %i[create destroy]
   end
 end

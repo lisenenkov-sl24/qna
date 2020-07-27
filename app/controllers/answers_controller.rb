@@ -1,25 +1,26 @@
 class AnswersController < ApplicationController
-  before_action :find_question, only: %i[index new create]
-  before_action :find_answer, only: %i[show edit update destroy]
-  before_action :authenticate_user!, only:  %i[new create edit update destroy]
-
-  def index
-    @answers = @question.answers
-  end
-
-  def show; end
-
-  def new
-    @answer = @question.answers.new
-  end
+  before_action :authenticate_user!
+  before_action :find_question, only: %i[create]
+  before_action :find_answer, only: %i[destroy]
 
   def create
-    @answer = @question.answers.build(answer_params)
+    @answer = Answer.new(answer_params)
+    @answer.question = @question
     @answer.author = current_user
     if @answer.save
-      redirect_to @answer
+      redirect_to @question, notice: 'Your answer successfully created.'
     else
-      render :new
+      render 'questions/show'
+    end
+  end
+
+  def destroy
+    @question = @answer.question
+    if current_user.author_of? @answer
+      @answer.destroy
+      redirect_to @question, notice: 'Answer deleted.'
+    else
+      redirect_to @question, notice: 'Answer can\'t be deleted.'
     end
   end
 
