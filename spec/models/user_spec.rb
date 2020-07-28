@@ -6,27 +6,14 @@ RSpec.describe User, type: :model do
 
   describe 'test author' do
     let(:user) { create :user }
-    let(:user2) { create :user }
 
-    context 'answer' do
-      it 'own' do
-        answer = create :answer, author: user
-        expect(user.author_of?(answer)).to be_truthy
-      end
-      it 'not own' do
-        answer = create :answer, author: user2
-        expect(user.author_of?(answer)).to be_falsey
-      end
+    it 'own' do
+      question = create :question, author: user
+      expect(user).to be_author_of(question)
     end
-    context 'questions' do
-      it 'own' do
-        question = create :question, author: user
-        expect(user.author_of?(question)).to be_truthy
-      end
-      it 'not own' do
-        question = create :question, author: user2
-        expect(user.author_of?(question)).to be_falsey
-      end
+    it 'not own' do
+      question = create :question, author: create(:user)
+      expect(user).to_not be_author_of(question)
     end
 
   end

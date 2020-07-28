@@ -56,7 +56,7 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'sets current user as author' do
         create_request
-        expect(Question.order(:id).last).to have_attributes(author: user)
+        expect(assigns(:question)).to have_attributes(author: user)
       end
 
       it 'redirects to question' do

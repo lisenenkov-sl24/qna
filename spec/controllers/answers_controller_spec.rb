@@ -18,11 +18,11 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'sets current user as author' do
         create_request
-        expect(Answer.order(:id).last).to have_attributes(author: user)
+        expect(assigns(:answer)).to have_attributes(author: user)
       end
 
       it 'redirects to question' do
-        expect(create_request).to redirect_to question_path(question)
+        expect(create_request).to redirect_to question
       end
     end
 
@@ -49,7 +49,7 @@ RSpec.describe AnswersController, type: :controller do
       end
 
       it 'redirects to question' do
-        expect(delete_request).to redirect_to question_path(question)
+        expect(delete_request).to redirect_to question
       end
     end
 
