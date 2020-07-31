@@ -24,6 +24,11 @@ RSpec.describe AnswersController, type: :controller do
       it 'redirects to question' do
         expect(create_request).to redirect_to question
       end
+
+      it 'js: renders create' do
+        post :create, params: { question_id: question, answer: attributes_for(:answer), format: :js }
+        expect(create_request).to render_template :create
+      end
     end
 
     context 'with invalid params' do
@@ -35,6 +40,55 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'rerenders question view' do
         expect(create_request).to render_template 'questions/show'
+      end
+
+      it 'js: renders create' do
+        post :create, params: { question_id: question, answer: attributes_for(:answer), format: :js }
+        expect(create_request).to render_template :create
+      end
+    end
+  end
+
+  describe 'POST #best' do
+    before { login user }
+
+    context 'by author' do
+      let!(:question) { create :question_with_answers, author: user, answers_count: 10 }
+      let!(:answer) { question.answers[5] }
+      before { post :best, params: { id: answer } }
+
+      it 'updates answer' do
+        answer.reload
+        expect(answer).to be_best
+      end
+
+      it 'redirects to questions' do
+        expect(response).to redirect_to question
+      end
+
+      it 'js: renders best' do
+        post :best, params: { id: answer, format: :js }
+        expect(response).to render_template :best
+      end
+    end
+
+    context 'by other user' do
+      let!(:question) { create :question_with_answers, author: create(:user), answers_count: 10 }
+      let!(:answer) { question.answers[5] }
+      before { post :best, params: { id: answer } }
+
+      it 'not updates answer' do
+        answer.reload
+        expect(answer).to_not be_best
+      end
+
+      it 'redirects to questions' do
+        expect(response).to redirect_to question
+      end
+
+      it 'js: returns 403' do
+        post :best, params: { id: answer, format: :js }
+        expect(response.status).to eq 403
       end
     end
   end
@@ -74,6 +128,32 @@ RSpec.describe AnswersController, type: :controller do
       it 'rerenders edit view' do
         expect(response).to render_template 'questions/show'
       end
+
+      it 'js: renders update' do
+        put :update, params: { id: answer, answer: update_data, format: :js }
+        expect(response).to render_template :update
+      end
+    end
+
+    context 'by other user' do
+      let(:user2) { create :user }
+      let!(:answer) { create :answer, question: question, author: user2 }
+      let(:update_data) { attributes_for(:answer, :invalid_text) }
+      before { put :update, params: { id: answer, answer: update_data } }
+
+      it 'not saves answer to db' do
+        answer.reload
+        expect(answer.text).to_not eq update_data[:text]
+      end
+
+      it 'redirects to question' do
+        expect(response).to redirect_to question_path(question)
+      end
+
+      it 'js: returns 403' do
+        put :update, params: { id: answer, answer: update_data, format: :js }
+        expect(response.status).to eq 403
+      end
     end
   end
 
@@ -89,6 +169,11 @@ RSpec.describe AnswersController, type: :controller do
       it 'redirects to question' do
         expect(delete_request).to redirect_to question
       end
+
+      it 'js: renders destroy' do
+        delete :destroy, params: { id: answer, format: :js }
+        expect(response).to render_template :destroy
+      end
     end
 
     context 'by other user' do
@@ -102,6 +187,11 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirects to question' do
         expect(delete_request).to redirect_to question_path(question)
+      end
+
+      it 'js: returns 403' do
+        delete :destroy, params: { id: answer, format: :js }
+        expect(response.status).to eq 403
       end
     end
   end

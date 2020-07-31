@@ -4,5 +4,5 @@ class Answer < ApplicationRecord
 
   validates :text, presence: true
 
-  scope :best_top, -> { joins(:question).order(Arel.sql('answers.id = questions.best_answer_id DESC, answers.id ASC')) }
+  scope :best_top, -> { order(best: :desc, id: :asc) }
 end

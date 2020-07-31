@@ -1,13 +1,11 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_question, only: %i[create]
-  before_action :find_answer, only: %i[edit update destroy]
+  before_action :find_answer, only: %i[best edit update destroy]
   helper_method :new_answer
 
   def create
-    @new_answer = Answer.new(answer_params)
-    @new_answer.question = @question
-    @new_answer.author = current_user
+    @new_answer = Answer.new(answer_params.merge(question: @question, author: current_user))
     answer_saved = @new_answer.save
     respond_to do |format|
       format.html do
@@ -17,6 +15,29 @@ class AnswersController < ApplicationController
           render 'questions/show'
         end
       end
+      format.js
+    end
+  end
+
+  def best
+    @question = @edit_answer.question
+
+    unless current_user&.author_of? @question
+      respond_to do |format|
+        format.html { redirect_to @question, notice: 'Best answer can\'t be selected' }
+        format.js { render status: 403, js: "alert('Best answer can\\\'t be selected')}')" }
+      end
+      return
+    end
+
+    Answer.transaction do
+      @question.answers.where(best: true).update_all(best: false)
+      @edit_answer.update(best: true)
+    end
+
+    @edit_answer = nil
+    respond_to do |format|
+      format.html { redirect_to @question, notice: 'Best question changed' }
       format.js
     end
   end
@@ -41,6 +62,7 @@ class AnswersController < ApplicationController
         end
       end
       format.js do
+        @question = @edit_answer.question
         @answer = @edit_answer
         @edit_answer = nil if answer_saved
       end
@@ -80,7 +102,12 @@ class AnswersController < ApplicationController
 
   def check_author(notice)
     result = current_user.author_of? @edit_answer
-    redirect_to @edit_answer.question, notice: notice unless result
+    unless result
+      respond_to do |format|
+        format.html { redirect_to @edit_answer.question, notice: notice }
+        format.js { render status: 403, js: "alert('#{helpers.j(notice)}')" }
+      end
+    end
     result
   end
 

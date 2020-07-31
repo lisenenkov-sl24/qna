@@ -74,12 +74,92 @@ RSpec.describe QuestionsController, type: :controller do
       it 'rerenders new view' do
         expect(create_request).to render_template :new
       end
+
+      it 'js: renders create' do
+        post :create, params: { question: attributes_for(:question), format: :js }
+        expect(create_request).to render_template :create
+      end
+    end
+  end
+
+  describe 'GET #edit' do
+    before { login user }
+    before { get :edit, params: { id: question } }
+
+    it 'assigns @question' do
+      expect(assigns(:question)).to eq question
+    end
+
+    it 'renders edit view' do
+      expect(response).to render_template :edit
+    end
+  end
+
+  describe 'PUT #update' do
+    before { login user }
+    context 'with valid params' do
+      let(:update_data) { attributes_for(:question, :updated) }
+      before { put :update, params: { id: question, question: update_data } }
+
+      it 'assigns @question' do
+        expect(assigns(:question)).to eq question
+      end
+
+      it 'saves question to db' do
+        question.reload
+        expect(question).to have_attributes update_data.slice(:title, :body)
+      end
+
+      it 'redirects to question' do
+        expect(response).to redirect_to assigns(:question)
+      end
+
+      it 'js: renders update' do
+        post :update, params: { id: question, question: update_data, format: :js }
+        expect(response).to render_template :update
+      end
+    end
+
+    context 'with invalid params' do
+      let(:update_data) { attributes_for(:question, :invalid_title) }
+      before { put :update, params: { id: question, question: update_data } }
+
+      it 'not saves question to db' do
+        question.reload
+        expect(question).to_not have_attributes update_data.slice(:title, :body)
+      end
+
+      it 'rerenders edit view' do
+        expect(response).to render_template :edit
+      end
+    end
+
+    context 'by other user' do
+      let(:user2) { create :user }
+      let!(:question) { create :question, author: user2 }
+      let(:update_data) { attributes_for(:question, :invalid_title) }
+      before { put :update, params: { id: question, question: update_data } }
+
+      it 'not saves question to db' do
+        question.reload
+        expect(question).to_not have_attributes update_data.slice(:title, :body)
+      end
+
+      it 'redirects to question' do
+        expect(question).to redirect_to question
+      end
+
+      it 'js: returns 403' do
+        put :update, params: { id: question, question: update_data, format: :js }
+        expect(response.status).to eq 403
+      end
     end
   end
 
   describe 'DELETE #destroy' do
+    before { login user }
+
     context 'by author' do
-      before { login user }
       let!(:question) { create :question, author: user }
       let(:delete_request) { delete :destroy, params: { id: question } }
 
@@ -93,12 +173,11 @@ RSpec.describe QuestionsController, type: :controller do
     end
 
     context 'by other user' do
-      before { login user }
       let(:user2) { create :user }
       let!(:question) { create :question, author: user2 }
       let(:delete_request) { delete :destroy, params: { id: question } }
 
-      it 'not question answer from db' do
+      it 'not deletes question from db' do
         expect { delete_request }.to_not change(Question, :count)
       end
 
@@ -107,4 +186,5 @@ RSpec.describe QuestionsController, type: :controller do
       end
     end
   end
+
 end
