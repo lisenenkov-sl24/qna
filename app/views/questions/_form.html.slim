@@ -1,6 +1,7 @@
+dic class='errors'
 = render 'shared/errors', resource: @question
 
-= form_with model: @question, local: true do |f|
+= form_with model: @question do |f|
   div class='form-group'
     = f.label :title
     br

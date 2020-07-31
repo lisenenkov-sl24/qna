@@ -13,22 +13,43 @@ feature 'User can create answer' do
       visit question_path(question)
     end
 
-    scenario 'saves correct answer' do
-      answer_text = "Answer text #{SecureRandom.uuid}"
-      fill_in 'Answer', with: answer_text
-      click_on 'Submit answer'
+    describe 'no js browser' do
 
-      expect(page).to have_text answer_text
+      scenario 'saves correct answer' do
+        answer_text = "Answer text #{SecureRandom.uuid}"
+        fill_in 'Answer', with: answer_text
+        click_on 'Submit answer'
+
+        expect(page).to have_text answer_text
+      end
+
+      scenario 'blocks an answer with errors' do
+        click_on 'Submit answer'
+
+        expect(page).to have_text 'Text can\'t be blank'
+      end
     end
 
-    scenario 'blocks an answer with errors' do
-      click_on 'Submit answer'
+    describe 'js browser', js: true do
+      scenario 'saves correct answer' do
+        answer_text = "Answer text #{SecureRandom.uuid}"
+        fill_in 'Answer', with: answer_text
+        click_on 'Submit answer'
 
-      expect(page).to have_text 'Text can\'t be blank'
+        expect(page).to have_text answer_text
+      end
+
+      scenario 'blocks an answer with errors' do
+        click_on 'Submit answer'
+
+        expect(page).to have_text 'Text can\'t be blank'
+      end
     end
   end
 
   scenario 'unauthenticated user can\'t submit answer' do
+    visit question_path(question)
+
     expect(page).to_not have_field 'Answer'
     expect(page).to_not have_button 'Submit answer'
   end

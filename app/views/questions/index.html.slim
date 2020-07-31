@@ -1,8 +1,8 @@
 table
+  tr
+    th Title
+    th colspan='2' Actions
   - @questions.each do |q|
-    tr
-      th Title
-      th colspan='2' Actions
     tr data-id=q.id
       td = q.title
       td = link_to 'Show', question_path(q)

@@ -1,0 +1,5 @@
+$('.new-answer .errors').html('<%= j render 'shared/errors', resource: @new_answer %>');
+<% if @new_answer.persisted? %>
+$('.answers').append('<%= j render @new_answer %>');
+$('.new-answer #answer_text').val('');
+<% end %>

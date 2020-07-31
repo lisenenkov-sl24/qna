@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   root 'questions#index'
 
   resources :questions do
-    resources :answers, shallow: true, only: %i[create destroy]
+    post :best
+    resources :answers, shallow: true, only: %i[create edit update destroy]
   end
 end

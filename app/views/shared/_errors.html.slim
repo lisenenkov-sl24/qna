@@ -1,5 +1,5 @@
 - if resource&.errors.present?
-  h5= "#{resource.errors.count} error(s) retected:"
+  h5= "#{resource.errors.count} error(s) detected:"
   ul
     - resource.errors.full_messages.each do |message|
       li= message

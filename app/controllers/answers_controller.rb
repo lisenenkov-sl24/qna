@@ -1,27 +1,62 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_question, only: %i[create]
-  before_action :find_answer, only: %i[destroy]
+  before_action :find_answer, only: %i[edit update destroy]
+  helper_method :new_answer
 
   def create
-    @answer = Answer.new(answer_params)
-    @answer.question = @question
-    @answer.author = current_user
-    if @answer.save
-      redirect_to @question, notice: 'Your answer successfully created.'
-    else
-      render 'questions/show'
+    @new_answer = Answer.new(answer_params)
+    @new_answer.question = @question
+    @new_answer.author = current_user
+    answer_saved = @new_answer.save
+    respond_to do |format|
+      format.html do
+        if answer_saved
+          redirect_to @question, notice: 'Your answer successfully created.'
+        else
+          render 'questions/show'
+        end
+      end
+      format.js
+    end
+  end
+
+  def edit
+    respond_to do |format|
+      format.html { render_html_edit }
+      format.js
+    end
+  end
+
+  def update
+    return unless check_author 'Answer can\'t be updated.'
+
+    answer_saved = @edit_answer.update(answer_params)
+    respond_to do |format|
+      format.html do
+        if answer_saved
+          redirect_to @edit_answer.question
+        else
+          render_html_edit
+        end
+      end
+      format.js do
+        @answer = @edit_answer
+        @edit_answer = nil if answer_saved
+      end
     end
   end
 
   def destroy
-    @question = @answer.question
-    if current_user.author_of? @answer
-      @answer.destroy
-      redirect_to @question, notice: 'Answer deleted.'
-    else
-      redirect_to @question, notice: 'Answer can\'t be deleted.'
+    return unless check_author 'Answer can\'t be deleted.'
+
+    @question = @edit_answer.question
+    @edit_answer.destroy
+    respond_to do |format|
+      format.html { redirect_to @question, notice: 'Answer deleted.' }
+      format.js
     end
+
   end
 
   private
@@ -31,10 +66,25 @@ class AnswersController < ApplicationController
   end
 
   def find_answer
-    @answer = Answer.find(params[:id])
+    @edit_answer = Answer.find(params[:id])
   end
 
   def answer_params
     params.require(:answer).permit(:text)
+  end
+
+  def render_html_edit
+    @question = @edit_answer.question
+    render 'questions/show'
+  end
+
+  def check_author(notice)
+    result = current_user.author_of? @edit_answer
+    redirect_to @edit_answer.question, notice: notice unless result
+    result
+  end
+
+  def new_answer
+    @new_answer ||= Answer.new
   end
 end

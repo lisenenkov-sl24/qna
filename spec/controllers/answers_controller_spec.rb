@@ -18,7 +18,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'sets current user as author' do
         create_request
-        expect(assigns(:answer)).to have_attributes(author: user)
+        expect(assigns(:new_answer)).to have_attributes(author: user)
       end
 
       it 'redirects to question' do
@@ -35,6 +35,44 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'rerenders question view' do
         expect(create_request).to render_template 'questions/show'
+      end
+    end
+  end
+
+  describe 'GET #edit' do
+    before { get :edit, params: { id: answer } }
+
+    it 'assigns @edit_answer' do
+      expect(assigns(:edit_answer)).to eq answer
+    end
+  end
+
+  describe 'PUT #update' do
+    context 'with valid params' do
+      let(:update_data) { attributes_for(:answer, :updated) }
+      before { put :update, params: { id: answer, answer: update_data } }
+
+      it 'assigns @answer' do
+        expect(assigns(:edit_answer)).to eq answer
+      end
+
+      it 'saves answer to db' do
+        answer.reload
+        expect(answer.as_json).to include update_data.stringify_keys
+      end
+    end
+
+    context 'with invalid params' do
+      let(:update_data) { attributes_for(:answer, :invalid_text) }
+      before { put :update, params: { id: answer, answer: update_data } }
+
+      it 'not saves answer to db' do
+        answer.reload
+        expect(answer.text).to_not eq update_data[:text]
+      end
+
+      it 'rerenders edit view' do
+        expect(response).to render_template 'questions/show'
       end
     end
   end

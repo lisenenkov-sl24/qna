@@ -5,18 +5,37 @@ feature 'User deletes answer' do
   given(:user2) { create :user }
   given(:question) { create :question, author: user }
 
-  scenario 'can delete own answer' do
-    answer = create :answer, author: user, question: question
+  describe 'no js browser' do
+    scenario 'can delete own answer' do
+      answer = create :answer, author: user, question: question
 
-    sign_in(user)
-    visit question_path(question)
+      sign_in(user)
+      visit question_path(question)
 
-    within "table.answers/tr[@data-id=#{answer.id}]" do
-      click_on 'Delete'
+      within "table.answers tr[data-id='#{answer.id}']" do
+        click_on 'Delete'
+      end
+
+      expect(page).to have_text 'Answer deleted.'
+      expect(page).to_not have_text answer.text
     end
+  end
 
-    expect(page).to have_text 'Answer deleted.'
-    expect(page).to_not have_text answer.text
+  describe 'js browser', js: true do
+    scenario 'can delete own answer' do
+      answer = create :answer, author: user, question: question
+
+      sign_in(user)
+      visit question_path(question)
+
+      within "table.answers tr[data-id='#{answer.id}']" do
+        accept_confirm do
+          click_on 'Delete'
+        end
+      end
+
+      expect(page).to_not have_text answer.text
+    end
   end
 
   scenario 'can\'t delete other author answer' do
@@ -26,7 +45,7 @@ feature 'User deletes answer' do
     sign_in(user)
     visit question_path(question)
 
-    within "table.answers/tr[@data-id=#{answer.id}]" do
+    within "table.answers tr[data-id='#{answer.id}']" do
       expect(page).to_not have_link 'Delete'
     end
   end

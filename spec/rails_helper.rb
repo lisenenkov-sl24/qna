@@ -66,6 +66,8 @@ RSpec.configure do |config|
   config.include FeatureHelpers, type: :feature
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ControllerHelpers, type: :controller
+
+  Capybara.javascript_driver = :selenium_chrome_headless
 end
 
 Shoulda::Matchers.configure do |config|

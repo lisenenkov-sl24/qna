@@ -1,0 +1,6 @@
+h4 Title
+= @question.title
+h4 Body
+= @question.body
+- if current_user&.author_of? @question
+  = link_to 'Edit', edit_question_path(@question), remote: true
