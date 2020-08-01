@@ -30,10 +30,7 @@ class AnswersController < ApplicationController
       return
     end
 
-    Answer.transaction do
-      @question.answers.where(best: true).update_all(best: false)
-      @edit_answer.update(best: true)
-    end
+    @edit_answer.update(best: true)
 
     @edit_answer = nil
     respond_to do |format|

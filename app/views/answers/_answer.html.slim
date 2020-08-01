@@ -9,7 +9,7 @@ tr class="answer #{answer.best ? '' : 'best '}" data-id=answer.id
     td
       div class='show' = answer.text
     td
-      - if !answer.best && current_user&.author_of?(@question)
+      - if !answer.best? && current_user&.author_of?(@question)
         = link_to 'Best', best_answer_path(answer), remote: true, method: :post
       - if current_user&.author_of? answer
         = link_to 'Edit', edit_answer_path(id: answer), remote: true
