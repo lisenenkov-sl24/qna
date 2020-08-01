@@ -13,7 +13,7 @@ class Answer < ApplicationRecord
     return unless best && best_changed?
 
     question.answers.where(best: true).each do |answer|
-      answer.update(best: false)
+      answer.update!(best: false)
     end
   end
 end
