@@ -1,13 +1,10 @@
 table class='answers'
-  = render @question.answers.best_top
-div class='new-answer'
-  div class='errors'
-    = render 'shared/errors', resource: @new_answer
+  - @question.answers.best_top.each do |answer|
+    tr class="answer #{answer.best ? 'best ' : ''}" data-id=answer.id
+      - if @edit_answer == answer
+        = render 'answers/form', answer: @edit_answer, question: @question
+      - else
+        = render 'answers/data', answer: answer, question: @question
   -if user_signed_in?
-    = form_with model: [@question, new_answer] do |f|
-      div class='form-group'
-        = f.label :text, 'Answer'
-        br
-        = f.text_area :text
-      div class='form-group'
-        = f.submit 'Submit answer'
+    tr class='new-answer'
+      = render 'answers/form', answer: new_answer, question: @question

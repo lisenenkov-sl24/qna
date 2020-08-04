@@ -2,5 +2,11 @@ h4 Title
 = @question.title
 h4 Body
 = @question.body
+- @question.files.each do |file|
+  div
+    = link_to file.filename.to_s, url_for(file)
+    - if current_user&.author_of? @question
+      span
+      = link_to 'X', deletefile_question_path(@question, file: file), method: :delete, remote: true
 - if current_user&.author_of? @question
   = link_to 'Edit', edit_question_path(@question), remote: true

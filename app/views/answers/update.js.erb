@@ -1,1 +1,1 @@
-$('.answers tr[data-id=<%= @answer.id %>]').html('<%= j render @answer %>');
+$('.answers tr[data-id=<%= @answer.id %>]').html('<%= j render 'data', answer: @answer, question: @answer.question %>');

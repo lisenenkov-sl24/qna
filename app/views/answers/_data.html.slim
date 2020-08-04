@@ -1,0 +1,14 @@
+td
+  div class='show' = answer.text
+  - answer.files.each do |file|
+    div
+      = link_to file.filename.to_s, url_for(file)
+      - if current_user&.author_of? answer
+        span
+        = link_to 'X', deletefile_answer_path(answer, file: file), method: :delete, remote: true
+td
+  - if !answer.best? && current_user&.author_of?(question)
+    = link_to 'Best', best_answer_path(answer), remote: true, method: :post
+  - if current_user&.author_of? answer
+    = link_to 'Edit', edit_answer_path(id: answer), remote: true
+    = link_to 'Delete', answer_path(id: answer), remote: true, method: :delete, data: { confirm: 'Delete answer?' }

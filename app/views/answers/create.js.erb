@@ -1,5 +1,9 @@
 $('.new-answer .errors').html('<%= j render 'shared/errors', resource: @new_answer %>');
 <% if @new_answer.persisted? %>
-$('.answers').append('<%= j render @new_answer %>');
+$('.new-answer').before('<%=
+  content_tag :tr, class: 'answer', data: { id: @new_answer.id } do %><%=
+    j render 'data', answer: @new_answer, question: @question %><%
+  end %>');
 $('.new-answer #answer_text').val('');
+$('.new-answer #answer_files').val('');
 <% end %>

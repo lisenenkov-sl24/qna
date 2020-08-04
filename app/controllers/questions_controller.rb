@@ -1,6 +1,6 @@
 class QuestionsController < ApplicationController
-  before_action :authenticate_user!, only: %i[new create destroy]
-  before_action :find_question, only: %i[show edit update destroy]
+  before_action :authenticate_user!, only: %i[new create update destroy deletefile]
+  before_action :find_question, only: %i[show edit update destroy deletefile]
 
   helper_method :new_answer
 
@@ -52,26 +52,33 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def deletefile
+    return unless check_author(@question, 'Question file can\'t be deleted.')
+
+    file = @question.files.find(params[:file])
+    @question.files.destroy(file)
+    respond_to do |format|
+      format.html { redirect_to @question, notice: 'Question file deleted.' }
+      format.js { render :update }
+    end
+
+  end
+
   def destroy
-    return unless check_author(questions_path,'Question can\'t be deleted.')
+    return unless check_author(questions_path, 'Question can\'t be deleted.')
 
     @question.destroy
     redirect_to questions_path, notice: 'Question deleted.'
   end
 
-
   private
 
   def find_question
-    @question = Question.find(params[:id])
+    @question = Question.with_attached_files.find(params[:id])
   end
 
   def question_params
-    params.require(:question).permit(:title, :body)
-  end
-
-  def answer_params
-    params.require(:answer).permit(:text)
+    params.require(:question).permit(:title, :body, files: [])
   end
 
   def check_author(path, notice)

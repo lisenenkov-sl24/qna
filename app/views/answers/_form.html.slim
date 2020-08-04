@@ -1,0 +1,10 @@
+td colspan= '2'
+  div class='errors'
+    = render 'shared/errors', resource: answer
+  = form_with model: [answer.persisted? ? nil : question, answer] do |f|
+    = f.text_area :text
+    div class='form-group'
+      = f.label :files
+      br
+      = f.file_field :files, multiple: true
+    = f.submit answer.persisted? ? 'Save' : 'Submit answer'

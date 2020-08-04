@@ -1,5 +1,5 @@
-dic class='errors'
-= render 'shared/errors', resource: @question
+div class='errors'
+  = render 'shared/errors', resource: @question
 
 = form_with model: @question do |f|
   div class='form-group'
@@ -10,5 +10,9 @@ dic class='errors'
     = f.label :body
     br
     = f.text_area :body
+  div class='form-group'
+    = f.label :files
+    br
+    = f.file_field :files, multiple: true
   div class='form-group'
     = f.submit @question.persisted? ? 'Save' : 'Ask'

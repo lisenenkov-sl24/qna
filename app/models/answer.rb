@@ -3,6 +3,8 @@ class Answer < ApplicationRecord
   belongs_to :author, class_name: 'User'
   before_save :before_save_set_best
 
+  has_many_attached :files, dependent: :destroy
+
   validates :text, presence: true
 
   scope :best_top, -> { order(best: :desc, id: :asc) }

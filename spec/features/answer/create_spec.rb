@@ -7,6 +7,7 @@ feature 'User can create answer' do
 
   describe 'authenticated user' do
     given(:user) { create :user }
+    given(:updated_answer_data) { attributes_for :answer, :updated }
 
     background do
       sign_in(user)
@@ -15,12 +16,22 @@ feature 'User can create answer' do
 
     describe 'no js browser' do
 
-      scenario 'saves correct answer' do
-        answer_text = "Answer text #{SecureRandom.uuid}"
-        fill_in 'Answer', with: answer_text
-        click_on 'Submit answer'
+      describe 'correct answer' do
+        background { fill_in 'answer_text', with: updated_answer_data[:text] }
 
-        expect(page).to have_text answer_text
+        scenario 'saves correct answer' do
+          click_on 'Submit answer'
+
+          expect(page).to have_text updated_answer_data[:text]
+        end
+
+        scenario 'saved with attached files' do
+          attach_file 'File', ["#{Rails.root}/README.md", "#{Rails.root}/Gemfile.lock"]
+          click_on 'Submit answer'
+
+          expect(page).to have_link 'README.md'
+          expect(page).to have_link 'Gemfile.lock'
+        end
       end
 
       scenario 'blocks an answer with errors' do
@@ -31,12 +42,22 @@ feature 'User can create answer' do
     end
 
     describe 'js browser', js: true do
-      scenario 'saves correct answer' do
-        answer_text = "Answer text #{SecureRandom.uuid}"
-        fill_in 'Answer', with: answer_text
-        click_on 'Submit answer'
+      describe 'correct answer' do
+        background { fill_in 'answer_text', with: updated_answer_data[:text] }
 
-        expect(page).to have_text answer_text
+        scenario 'saves correct answer' do
+          click_on 'Submit answer'
+
+          expect(page).to have_text updated_answer_data[:text]
+        end
+
+        scenario 'saved with attached files' do
+          attach_file 'File', ["#{Rails.root}/README.md", "#{Rails.root}/Gemfile.lock"]
+          click_on 'Submit answer'
+
+          expect(page).to have_link 'README.md'
+          expect(page).to have_link 'Gemfile.lock'
+        end
       end
 
       scenario 'blocks an answer with errors' do

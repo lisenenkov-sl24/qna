@@ -23,7 +23,6 @@ RSpec.describe QuestionsController, type: :controller do
 
     it 'assigns @question' do
       expect(assigns(:question)).to eq question
-
     end
 
     it 'renders show view' do
@@ -48,7 +47,7 @@ RSpec.describe QuestionsController, type: :controller do
     before { login user }
 
     context 'with valid params' do
-      let(:create_request) { post :create, params: { question: attributes_for(:question) } }
+      let(:create_request) { post :create, params: { question: attributes_for(:question, :with_files) } }
 
       it 'saves question to db' do
         expect { create_request }.to change(Question, :count).by(1)
@@ -57,6 +56,11 @@ RSpec.describe QuestionsController, type: :controller do
       it 'sets current user as author' do
         create_request
         expect(assigns(:question)).to have_attributes(author: user)
+      end
+
+      it 'saves files to db' do
+        create_request
+        expect(assigns(:question).files.count).to eq 1
       end
 
       it 'redirects to question' do
@@ -110,6 +114,11 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question).to have_attributes update_data.slice(:title, :body)
       end
 
+      it 'saves files to db' do
+        question.reload
+        expect(question.files.count).to eq 1
+      end
+
       it 'redirects to question' do
         expect(response).to redirect_to assigns(:question)
       end
@@ -153,6 +162,24 @@ RSpec.describe QuestionsController, type: :controller do
         put :update, params: { id: question, question: update_data, format: :js }
         expect(response.status).to eq 403
       end
+    end
+  end
+
+  describe 'DELETE #deletefile' do
+    let(:question) { create :question, :with_files, author: user }
+
+    it 'deletes file from own question' do
+      login user
+      delete :deletefile, params: { id: question, file: question.files[0] }
+      question.reload
+      expect(question.files.count).to eq 0
+    end
+
+    it 'keep file from other user question' do
+      login create(:user)
+      delete :deletefile, params: { id: question, file: question.files[0] }
+      question.reload
+      expect(question.files.count).to eq 1
     end
   end
 

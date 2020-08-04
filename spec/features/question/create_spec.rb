@@ -12,17 +12,30 @@ feature 'User can create question' do
       click_on 'Ask question'
     end
 
-    scenario 'saved correct question' do
+    describe 'correct question' do
+      given(:question_data) { build(:question) }
+      background do
+        fill_in 'Title', with: question_data.title
+        fill_in 'Body', with: question_data.body
+      end
 
-      question = build(:question)
+      scenario 'saved' do
 
-      fill_in 'Title', with: question.title
-      fill_in 'Body', with: question.body
-      click_on 'Ask'
+        click_on 'Ask'
 
-      expect(page).to have_content 'Your question successfully created.'
-      expect(page).to have_content question.title
-      expect(page).to have_content question.body
+        expect(page).to have_content 'Your question successfully created.'
+        expect(page).to have_content question_data.title
+        expect(page).to have_content question_data.body
+      end
+
+      scenario 'saved with attached files' do
+        attach_file 'File', ["#{Rails.root}/README.md", "#{Rails.root}/Gemfile.lock"]
+        click_on 'Ask'
+
+        expect(page).to have_link 'README.md'
+        expect(page).to have_link 'Gemfile.lock'
+      end
+
     end
 
     scenario 'blocked a question with errors' do
@@ -32,6 +45,7 @@ feature 'User can create question' do
       expect(page).to have_content 'Title can\'t be blank'
       expect(page).to have_content 'Body can\'t be blank'
     end
+
   end
 
   describe 'unauthenticated user' do

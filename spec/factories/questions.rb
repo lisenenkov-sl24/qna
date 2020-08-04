@@ -18,6 +18,11 @@ FactoryBot.define do
     trait :updated do
       title { 'NewTitle' }
       body { 'NewBody' }
+      files { [Rack::Test::UploadedFile.new(Rails.root.join('README.md'))] }
+    end
+
+    trait :with_files do
+      files { [Rack::Test::UploadedFile.new(Rails.root.join('README.md'))] }
     end
 
     factory :question_with_answers do

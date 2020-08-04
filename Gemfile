@@ -22,6 +22,9 @@ gem 'jbuilder', '~> 2.7'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+#Amazon S3 bucket
+gem "aws-sdk-s3", require: false
+
 gem 'slim-rails'
 
 # Use Active Storage variant

@@ -10,7 +10,7 @@ RSpec.describe AnswersController, type: :controller do
   describe 'POST #create' do
 
     context 'with valid params' do
-      let(:create_request) { post :create, params: { question_id: question, answer: attributes_for(:answer) } }
+      let(:create_request) { post :create, params: { question_id: question, answer: attributes_for(:answer, :with_files) } }
 
       it 'saves answer to db' do
         expect { create_request }.to change { question.answers.count }.by(1)
@@ -19,6 +19,11 @@ RSpec.describe AnswersController, type: :controller do
       it 'sets current user as author' do
         create_request
         expect(assigns(:new_answer)).to have_attributes(author: user)
+      end
+
+      it 'saves files to db' do
+        create_request
+        expect(assigns(:new_answer).files.count).to eq 1
       end
 
       it 'redirects to question' do
@@ -107,12 +112,17 @@ RSpec.describe AnswersController, type: :controller do
       before { put :update, params: { id: answer, answer: update_data } }
 
       it 'assigns @answer' do
-        expect(assigns(:edit_answer)).to eq answer
+        expect(assigns(:answer)).to eq answer
       end
 
       it 'saves answer to db' do
         answer.reload
-        expect(answer.as_json).to include update_data.stringify_keys
+        expect(answer).to have_attributes update_data.slice(:text)
+      end
+
+      it 'saves files to db' do
+        answer.reload
+        expect(answer.files.count).to eq 1
       end
     end
 
@@ -131,7 +141,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'js: renders update' do
         put :update, params: { id: answer, answer: update_data, format: :js }
-        expect(response).to render_template :update
+        expect(response).to render_template :edit
       end
     end
 
@@ -154,6 +164,24 @@ RSpec.describe AnswersController, type: :controller do
         put :update, params: { id: answer, answer: update_data, format: :js }
         expect(response.status).to eq 403
       end
+    end
+  end
+
+  describe 'DELETE #deletefile' do
+    let(:answer) { create :answer, :with_files, author: user }
+
+    it 'deletes file from own answer' do
+      login user
+      delete :deletefile, params: { id: answer, file: answer.files[0] }
+      answer.reload
+      expect(question.files.count).to eq 0
+    end
+
+    it 'keep file from other user answer' do
+      login create(:user)
+      delete :deletefile, params: { id: answer, file: answer.files[0] }
+      answer.reload
+      expect(answer.files.count).to eq 1
     end
   end
 

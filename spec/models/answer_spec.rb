@@ -35,4 +35,8 @@ RSpec.describe Answer, type: :model do
 
   end
 
+  it 'have many attached files' do
+    expect(create(:answer).files).to be_an_instance_of(ActiveStorage::Attached::Many)
+  end
+
 end
