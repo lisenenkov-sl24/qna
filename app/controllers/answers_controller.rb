@@ -78,7 +78,7 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:text, files: [])
+    params.require(:answer).permit(:text, files: [], links_attributes: [:id, :name, :url, :_destroy])
   end
 
   def render_html_edit

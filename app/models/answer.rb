@@ -1,9 +1,13 @@
 class Answer < ApplicationRecord
   belongs_to :question
   belongs_to :author, class_name: 'User'
-  before_save :before_save_set_best
+  has_many :links, dependent: :destroy, as: :linkable
 
   has_many_attached :files, dependent: :destroy
+
+  before_save :before_save_set_best
+
+  accepts_nested_attributes_for :links, allow_destroy: true, reject_if: :all_blank
 
   validates :text, presence: true
 

@@ -30,4 +30,14 @@ module ApplicationHelper
 
     content_tag :div, content, class: "alert alert-#{css_class}"
   end
+
+  def create_link(name, link)
+    linkdata = link_to name, link, target: '_blank'
+
+    if /\Ahttps:\/\/gist.github.com\/[^\/]+\/[0-9a-f].*\z/.match link
+      content_tag :script, "", src: "#{link}.js"
+    else
+      linkdata
+    end
+  end
 end

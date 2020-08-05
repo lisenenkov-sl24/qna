@@ -6,6 +6,9 @@ td
       - if current_user&.author_of? answer
         span
         = link_to 'X', file_path(id: file), method: :delete, remote: true
+  - answer.links.each do |link|
+    div class='link' data-id=link.id
+    = create_link link.name, link.url
 td
   - if !answer.best? && current_user&.author_of?(question)
     = link_to 'Best', best_answer_path(answer), remote: true, method: :post
