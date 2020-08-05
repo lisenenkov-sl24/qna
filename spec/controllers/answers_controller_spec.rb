@@ -167,24 +167,6 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
-  describe 'DELETE #deletefile' do
-    let(:answer) { create :answer, :with_files, author: user }
-
-    it 'deletes file from own answer' do
-      login user
-      delete :deletefile, params: { id: answer, file: answer.files[0] }
-      answer.reload
-      expect(question.files.count).to eq 0
-    end
-
-    it 'keep file from other user answer' do
-      login create(:user)
-      delete :deletefile, params: { id: answer, file: answer.files[0] }
-      answer.reload
-      expect(answer.files.count).to eq 1
-    end
-  end
-
   describe 'DELETE #destroy' do
     context 'by author' do
       let!(:answer) { create :answer, question: question, author: user }

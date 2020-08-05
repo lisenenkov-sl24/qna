@@ -38,18 +38,6 @@ class AnswersController < ApplicationController
     end
   end
 
-  def deletefile
-    return unless check_author 'Answer file can\'t be deleted.'
-
-    file = @answer.files.find(params[:file])
-    @answer.files.destroy(file)
-    respond_to do |format|
-      format.html { redirect_to @answer.question, notice: 'Answer file deleted.' }
-      format.js { render :update }
-    end
-
-  end
-
   def edit
     respond_to do |format|
       format.html { render_html_edit }

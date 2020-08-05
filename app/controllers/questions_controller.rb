@@ -52,18 +52,6 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def deletefile
-    return unless check_author(@question, 'Question file can\'t be deleted.')
-
-    file = @question.files.find(params[:file])
-    @question.files.destroy(file)
-    respond_to do |format|
-      format.html { redirect_to @question, notice: 'Question file deleted.' }
-      format.js { render :update }
-    end
-
-  end
-
   def destroy
     return unless check_author(questions_path, 'Question can\'t be deleted.')
 
