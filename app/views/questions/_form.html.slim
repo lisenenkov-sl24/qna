@@ -16,9 +16,21 @@ div class='errors'
     = f.fields_for :links do |link|
       = render 'links/link_fields', f: link
     = link_to_add_association 'Add link', f, :links, partial: 'links/link_fields'
-  div class='form-group'
+  div class='form-group attached-files'
     = f.label :files
     br
     = f.file_field :files, multiple: true
+  - unless @question.persisted?
+    = f.fields_for :rewards do |reward|
+      .rewards
+        div class='form-group'
+          = reward.label :name, 'Reward'
+          br
+          = reward.text_field :name
+        div class='form-group'
+          = reward.label :file, 'File'
+          br
+          = reward.file_field :file, accept: 'image/*'
+
   div class='form-group'
     = f.submit @question.persisted? ? 'Save' : 'Ask'

@@ -9,4 +9,7 @@ module FeatureHelpers
     click_on 'Log in'
   end
 
+  def upload_file(filename)
+    Rack::Test::UploadedFile.new(Rails.root.join(filename))
+  end
 end

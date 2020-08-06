@@ -21,5 +21,9 @@ class Answer < ApplicationRecord
     question.answers.where(best: true).each do |answer|
       answer.update!(best: false)
     end
+
+    question.rewards.each do |reward|
+      reward.update!(user: author)
+    end
   end
 end

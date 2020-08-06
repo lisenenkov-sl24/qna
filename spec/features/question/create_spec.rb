@@ -29,7 +29,9 @@ feature 'User can create question' do
       end
 
       scenario 'saved with attached files' do
-        attach_file 'File', ["#{Rails.root}/README.md", "#{Rails.root}/Gemfile.lock"]
+        within '.attached-files' do
+          attach_file 'File', ["#{Rails.root}/README.md", "#{Rails.root}/Gemfile.lock"]
+        end
         click_on 'Ask'
 
         expect(page).to have_link 'README.md'

@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-  before_action :authenticate_user!, only: %i[new create update destroy deletefile]
+  before_action :authenticate_user!, except: %i[index show]
   before_action :find_question, only: %i[show edit update destroy deletefile]
 
   helper_method :new_answer
@@ -12,6 +12,7 @@ class QuestionsController < ApplicationController
 
   def new
     @question = Question.new
+    @question.rewards.new
   end
 
   def create
@@ -66,7 +67,9 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, files: [], links_attributes: [:id, :name, :url, :_destroy])
+    params.require(:question).permit(:title, :body, files: [],
+                                     links_attributes: [:id, :name, :url, :_destroy],
+                                     rewards_attributes: [:name, :file])
   end
 
   def check_author(path, notice)

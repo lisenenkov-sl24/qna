@@ -22,6 +22,7 @@ html
                 = current_user.email
               div class='dropdown-menu'
                   = link_to 'Profile', edit_user_registration_path, class: 'dropdown-item'
+                  = link_to 'Rewards', rewards_path, class: 'dropdown-item'
                   = link_to 'Sign out', destroy_user_session_path, method: :delete, class: 'dropdown-item'
           - else
             ul class='nav navbar-nav'

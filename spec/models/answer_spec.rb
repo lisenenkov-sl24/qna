@@ -9,6 +9,7 @@ RSpec.describe Answer, type: :model do
 
   describe 'set best' do
     let(:question) { create :question_with_answers, answers_count: 5 }
+    let!(:reward) { create :reward, question: question }
     let(:answer1) { question.answers[1] }
     let(:answer2) { question.answers[2] }
 
@@ -30,11 +31,15 @@ RSpec.describe Answer, type: :model do
     end
 
     it 'unset best answer' do
-      answer1.update(best: false )
+      answer1.update(best: false)
       answer1.reload
       expect(answer1).to_not be_best
     end
 
+    it 'rewards user' do
+      reward.reload
+      expect(reward).to have_attributes user: answer1.author
+    end
   end
 
   it 'have many attached files' do
