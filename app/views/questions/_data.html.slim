@@ -11,8 +11,8 @@ h4 Body
 - @question.links.each do |link|
   div class='link' data-id=link.id
     = create_link link.name, link.url
-- @question.rewards.each do |reward|
-  div class='link' data-id=reward.id
-    = "Reward: #{reward.name}"
+- if @question.reward
+  div class='link'
+    = "Reward: #{@question.reward.name}"
 - if current_user&.author_of? @question
   = link_to 'Edit', edit_question_path(@question), remote: true

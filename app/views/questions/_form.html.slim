@@ -21,7 +21,7 @@ div class='errors'
     br
     = f.file_field :files, multiple: true
   - unless @question.persisted?
-    = f.fields_for :rewards do |reward|
+    = f.fields_for :reward do |reward|
       .rewards
         div class='form-group'
           = reward.label :name, 'Reward'

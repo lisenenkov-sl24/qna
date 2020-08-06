@@ -11,8 +11,7 @@ class QuestionsController < ApplicationController
   def show; end
 
   def new
-    @question = Question.new
-    @question.rewards.new
+    @question = Question.new(reward: Reward.new)
   end
 
   def create
@@ -69,7 +68,7 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(:title, :body, files: [],
                                      links_attributes: [:id, :name, :url, :_destroy],
-                                     rewards_attributes: [:name, :file])
+                                     reward_attributes: [:name, :file])
   end
 
   def check_author(path, notice)

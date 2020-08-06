@@ -34,7 +34,7 @@ feature 'User assign reward to a new question' do
 
     click_on 'Ask'
 
-    expect(page).to have_text 'Rewards name can\'t be blank'
+    expect(page).to have_text 'Reward name can\'t be blank'
   end
 
 

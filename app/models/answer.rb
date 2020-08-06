@@ -22,8 +22,6 @@ class Answer < ApplicationRecord
       answer.update!(best: false)
     end
 
-    question.rewards.each do |reward|
-      reward.update!(user: author)
-    end
+    question.reward&.update!(user: author)
   end
 end
