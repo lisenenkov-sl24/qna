@@ -3,7 +3,6 @@ $('turbolinks.load', function () {
         let data = e.detail[0];
         let voted = $('.voted', this);
         let unvoted = $('.unvoted', this);
-        console.log(voted.length)
         if (data.rate) {
             voted.removeClass('hidden');
             unvoted.addClass('hidden');
