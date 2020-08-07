@@ -1,6 +1,9 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_answer, only: %i[best edit update destroy deletefile]
+
+  include Voted
+
   helper_method :new_answer
 
   def create

@@ -98,6 +98,57 @@ RSpec.describe AnswersController, type: :controller do
     end
   end
 
+  describe 'POST #vote' do
+    before { login user }
+
+    context 'by author' do
+      let!(:question) { create :question_with_answers, author: user, answers_count: 10 }
+      let!(:answer) { question.answers[5] }
+      before { post :vote, params: { id: answer, rate: 1 } }
+
+      it 'not updates vote count' do
+        expect(answer.rating).to eq 0
+      end
+
+      it 'renders error' do
+        expect(response).to have_http_status :unprocessable_entity
+      end
+    end
+
+    context 'by other user' do
+      let!(:question) { create :question_with_answers, author: create(:user), answers_count: 10 }
+      let!(:answer) { question.answers[5] }
+      before { post :vote, params: { id: answer, rate: 1 } }
+
+      it 'updates vote count' do
+        expect(answer.rating).to eq 1
+      end
+
+      it 'renders json' do
+        expect(JSON.parse(response.body)).to eq 'rating' => 1, 'rate' => 1
+      end
+    end
+  end
+
+  describe 'DELETE #unvote' do
+    before { login user }
+
+    let!(:question) { create :question_with_answers, author: create(:user), answers_count: 10 }
+    let!(:answer) { question.answers[5] }
+    before do
+      answer.vote(user, 1)
+      delete :unvote, params: { id: answer }
+    end
+
+    it 'updates vote count' do
+      expect(answer.rating).to eq 0
+    end
+
+    it 'renders json' do
+      expect(JSON.parse(response.body)).to eq 'rating' => 0, 'rate' => nil
+    end
+  end
+
   describe 'GET #edit' do
     before { get :edit, params: { id: answer } }
 

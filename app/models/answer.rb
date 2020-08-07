@@ -3,6 +3,7 @@ class Answer < ApplicationRecord
   belongs_to :author, class_name: 'User'
   has_many :links, dependent: :destroy, as: :linkable
 
+  include Votable
   has_many_attached :files, dependent: :destroy
 
   before_save :before_save_set_best

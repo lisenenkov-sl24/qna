@@ -9,6 +9,7 @@ td
   - answer.links.each do |link|
     div class='link' data-id=link.id
     = create_link link.name, link.url
+  = render 'votes/vote', resource: answer
 td
   - if !answer.best? && current_user&.author_of?(question)
     = link_to 'Best', best_answer_path(answer), remote: true, method: :post

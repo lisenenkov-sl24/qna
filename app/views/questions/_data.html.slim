@@ -14,5 +14,6 @@ h4 Body
 - if @question.reward
   div class='link'
     = "Reward: #{@question.reward.name}"
+= render 'votes/vote', resource: @question
 - if current_user&.author_of? @question
   = link_to 'Edit', edit_question_path(@question), remote: true

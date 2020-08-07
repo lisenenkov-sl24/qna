@@ -9,6 +9,7 @@ require("@rails/activestorage").start()
 global.$ = require('jquery')
 require('bootstrap')
 require("channels")
+require("packs/vote")
 
 import 'cocoon-js';
 

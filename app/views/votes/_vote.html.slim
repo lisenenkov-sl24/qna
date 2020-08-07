@@ -1,0 +1,10 @@
+.voting
+  span.rating = resource.rating
+  - if current_user && !current_user&.author_of?(resource)
+    - vote = current_user.get_vote(resource)
+    span class=['voted', vote ? nil : 'hidden']
+      span.vote= vote == 1 ? '+' : '-'
+      = link_to 'x', polymorphic_path(resource, action: 'vote'), method: :delete, data: { remote: true, type: :json }
+    span class=['unvoted', vote ? 'hidden' : nil]
+      = link_to '+', polymorphic_path(resource, action: 'vote', rate: 1), method: :post, data: { remote: true, type: :json }
+      = link_to '-', polymorphic_path(resource, action: 'vote', rate: -1), method: :post, data: { remote: true, type: :json }

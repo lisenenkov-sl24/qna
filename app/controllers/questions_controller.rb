@@ -2,6 +2,8 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
   before_action :find_question, only: %i[show edit update destroy deletefile]
 
+  include Voted
+
   helper_method :new_answer
 
   def index
