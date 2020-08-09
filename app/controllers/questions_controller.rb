@@ -1,10 +1,9 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: %i[index show]
   before_action :find_question, only: %i[show edit update destroy deletefile]
+  after_action :publish_question, only: [:create]
 
   include Voted
-
-  helper_method :new_answer
 
   def index
     @questions = Question.all
@@ -84,7 +83,12 @@ class QuestionsController < ApplicationController
     result
   end
 
-  def new_answer
-    @new_answer ||= Answer.new
+  def publish_question
+    return if @question.errors.any?
+
+    ActionCable.server.broadcast 'questions', ApplicationController.render(json: {
+        action: params[:action],
+        data: ApplicationController.render(partial: 'questions/channel_question', locals: { question: @question })
+    })
   end
 end

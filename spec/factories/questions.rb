@@ -1,14 +1,8 @@
 FactoryBot.define do
-  sequence :title do |n|
-    "Title #{n}"
-  end
-  sequence :body do |n|
-    "Question #{n} body"
-  end
 
   factory :question do
-    title
-    body
+    sequence(:title) { |n| "Title #{n}" }
+    sequence(:body) { |n| "Question #{n} body" }
     author { create :user }
 
     trait :invalid_title do

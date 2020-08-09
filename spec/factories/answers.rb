@@ -1,11 +1,7 @@
 FactoryBot.define do
-  sequence :text do |n|
-    "Answer #{n} text"
-  end
-
   factory :answer do
     question
-    text
+    sequence(:text) { |n| "Answer #{n} text" }
     author { create :user }
 
     trait :invalid_text do

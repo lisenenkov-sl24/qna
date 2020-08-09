@@ -1,3 +1,5 @@
-div class='question'
+div class='question' data-id=@question.id
   = render 'questions/data'
 = render 'questions/answers'
+script
+  |subscribe_question_details()

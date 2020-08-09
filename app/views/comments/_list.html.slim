@@ -1,0 +1,10 @@
+.comments
+  .list
+    = render resource.comments
+  - if user_signed_in?
+    - comment = new_comment(resource)
+    = render 'shared/errors', resource: comment
+    = form_for [resource, comment] do |f|
+      = f.label :text, 'Comment'
+      = f.text_area :text
+      = f.submit 'Comment'

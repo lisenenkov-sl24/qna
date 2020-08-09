@@ -1,10 +1,9 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :find_answer, only: %i[best edit update destroy deletefile]
+  after_action :publish_answer, only: [:create]
 
   include Voted
-
-  helper_method :new_answer
 
   def create
     @question = Question.find(params[:question_id])
@@ -101,7 +100,18 @@ class AnswersController < ApplicationController
     result
   end
 
-  def new_answer
-    @new_answer ||= Answer.new
+  def publish_answer
+    return if @new_answer.errors.any?
+
+    render_data = helpers.content_tag :tr, class: 'answer', data: { id: @new_answer.id } do
+      ApplicationController.render(partial: 'answers/channel_data',
+                                   locals: { answer: @new_answer, question: @question })
+    end
+
+    ActionCable.server.broadcast "answers_#{@question.id}", ApplicationController.render(json: {
+        action: params[:action],
+        id: @new_answer.id,
+        data: render_data
+    })
   end
 end

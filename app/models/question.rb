@@ -3,6 +3,7 @@ class Question < ApplicationRecord
   belongs_to :author, class_name: 'User', foreign_key: :author_id
   has_many :links, dependent: :destroy, as: :linkable
   has_one :reward, dependent: :destroy
+  has_many :comments, as: :commentable, dependent: :destroy
 
   include Votable
   has_many_attached :files, dependent: :destroy

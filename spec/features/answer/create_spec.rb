@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'User can create answer' do
 
   given(:user) { create :user }
-  given(:question) { create :question_with_answers, answers_count: 10, author: user }
+  given(:question) { create :question_with_answers, answers_count: 3, author: user }
 
   describe 'authenticated user' do
     given(:user) { create :user }
@@ -64,6 +64,22 @@ feature 'User can create answer' do
         click_on 'Submit answer'
 
         expect(page).to have_text 'Text can\'t be blank'
+      end
+    end
+
+    describe "multiple sessions", js: true do
+      scenario "question appears on another user's page" do
+        Capybara.using_session('guest') do
+          visit question_path(question)
+        end
+
+        fill_in 'answer_text', with: updated_answer_data[:text]
+        click_on 'Submit answer'
+        expect(page).to have_text updated_answer_data[:text]
+
+        Capybara.using_session('guest') do
+          expect(page).to have_text updated_answer_data[:text]
+        end
       end
     end
   end

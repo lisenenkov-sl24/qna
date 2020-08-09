@@ -1,0 +1,6 @@
+let comments = $('.<%=@commentable.class.to_s.downcase%>s.comments');
+$('.errors', comments).html('<%= j render 'shared/errors', resource: @comment %>');
+<% if @comment.persisted? %>
+$('.list', comments).append('<%= j render 'comment', comment: @comment %>);
+$('#comment_text', comments).val('');
+<% end %>

@@ -17,3 +17,4 @@ h4 Body
 = render 'votes/vote', resource: @question
 - if current_user&.author_of? @question
   = link_to 'Edit', edit_question_path(@question), remote: true
+= render 'comments/list', resource: @question

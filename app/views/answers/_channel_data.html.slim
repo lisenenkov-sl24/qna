@@ -1,0 +1,9 @@
+td
+  div class='show' = answer.text
+  - answer.files.each do |file|
+    div  class='file' data-id=file.id
+      = link_to file.filename.to_s, url_for(file)
+  - answer.links.each do |link|
+    div class='link' data-id=link.id
+    = create_link link.name, link.url
+td
