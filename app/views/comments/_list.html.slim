@@ -5,6 +5,7 @@
     - comment = new_comment(resource)
     = render 'shared/errors', resource: comment
     = form_for [resource, comment] do |f|
-      = f.label :text, 'Comment'
-      = f.text_area :text
-      = f.submit 'Comment'
+      .input-group
+        = f.text_field :text, placeholder: 'Comment'
+        .input-group-append
+          = f.submit 'Comment', class: 'btn btn-secondary btn-sm'

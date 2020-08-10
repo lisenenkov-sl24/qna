@@ -38,11 +38,11 @@ class CommentsController < ApplicationController
   def publish_comment
     return if @comment.errors.any?
     render_data = ApplicationController.render(partial: 'comments/comment', locals: { comment: @comment })
-    ActionCable.server.broadcast "comments_#{@question.id}", ApplicationController.render(json: {
+    ActionCable.server.broadcast "comments_#{@question.id}", {
         action: params[:action],
         parent: { type: @commentable.class.to_s, id: @commentable.id },
         id: @comment.id,
         data: render_data
-    })
+    }
   end
 end

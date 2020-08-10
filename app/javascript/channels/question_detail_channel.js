@@ -5,39 +5,35 @@ global.subscribe_question_details = function () {
     const questionId = question.data('id');
     consumer.subscriptions.create({channel: 'AnswersChannel', question: questionId}, {
         received: function (data) {
-            let received_json = JSON.parse(data);
-            console.log(received_json);
-            if (received_json.action == 'create') {
-                if (!$('.answers .answer[data-id=' + received_json.id + ']').empty()) {
+            if (data.action == 'create') {
+                if (!$('.answers .answer[data-id=' + data.id + ']').empty()) {
                     return
                 }
 
                 if($('.answers .new-answer').empty()) {
-                    $('.answers').append(received_json.data)
+                    $('.answers').append(data.data)
                 }else {
-                    $('.answers .new-answer').before(received_json.data)
+                    $('.answers .new-answer').before(data.data)
                 }
             }
         }
     });
     consumer.subscriptions.create({channel: 'CommentsChannel', question: questionId}, {
         received: function (data) {
-            let received_json = JSON.parse(data);
-            console.log(received_json);
-            if (received_json.action == 'create') {
+            if (data.action == 'create') {
                 let parentNode = null;
-                if (received_json.parent.type == 'Question') {
+                if (data.parent.type == 'Question') {
                     parentNode = $('.question');
-                } else if (received_json.parent.type == 'Answer') {
-                    parentNode = $('.answer[data-id=' + received_json.parent.id + ']');
+                } else if (data.parent.type == 'Answer') {
+                    parentNode = $('.answer[data-id=' + data.parent.id + ']');
                 } else {
                     return
                 }
 
-                if (parentNode.is('.comments .comment[data-id=' + received_json.id + ']')) {
+                if (parentNode.is('.comments .comment[data-id=' + data.id + ']')) {
                     return
                 }
-                $('.comments .list', parentNode).append(received_json.data);
+                $('.comments .list', parentNode).append(data.data);
             }
         }
     });

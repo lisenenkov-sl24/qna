@@ -1,4 +1,4 @@
-table class='answers'
+table.answers.table.table-hover
   - @question.answers.best_top.each do |answer|
     tr class="answer #{answer.best ? 'best ' : ''}" data-id=answer.id
       - if @edit_answer == answer

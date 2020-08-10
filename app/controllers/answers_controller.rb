@@ -108,10 +108,10 @@ class AnswersController < ApplicationController
                                    locals: { answer: @new_answer, question: @question })
     end
 
-    ActionCable.server.broadcast "answers_#{@question.id}", ApplicationController.render(json: {
+    ActionCable.server.broadcast "answers_#{@question.id}", {
         action: params[:action],
         id: @new_answer.id,
         data: render_data
-    })
+    }
   end
 end

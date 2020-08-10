@@ -1,7 +1,9 @@
-table.questions
+table.questions.table.table-hover
   tr
     th Title
     th colspan='2' Actions
   = render @questions
 
 = link_to 'Ask question', new_question_path
+script
+  |subscribe_question_list()
