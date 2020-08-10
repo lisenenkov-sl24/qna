@@ -12,4 +12,21 @@ module FeatureHelpers
   def upload_file(filename)
     Rack::Test::UploadedFile.new(Rails.root.join(filename))
   end
+
+  def setup_mock_oauth
+    OmniAuth.config.add_mock :github, {
+      'provider' => 'github',
+      'uid' => '123',
+      'info' => {
+        'email' => 'mock@github.com'
+      }
+    }
+    OmniAuth.config.add_mock :facebook, {
+      'provider' => 'facebook',
+      'uid' => '123',
+      'info' => {
+        'email' => 'mock@facebook.com'
+      }
+    }
+  end
 end

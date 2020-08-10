@@ -67,6 +67,8 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ControllerHelpers, type: :controller
 
+  OmniAuth.config.test_mode = true
+
   Capybara.javascript_driver = :selenium_chrome_headless
 
   config.after(:all) do

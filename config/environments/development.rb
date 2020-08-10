@@ -64,4 +64,6 @@ Rails.application.configure do
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   Slim::Engine.set_options pretty: true
+
+  config.hosts.clear
 end
