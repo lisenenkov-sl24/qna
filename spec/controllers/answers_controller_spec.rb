@@ -87,8 +87,8 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer).to_not be_best
       end
 
-      it 'redirects to questions' do
-        expect(response).to redirect_to question
+      it 'redirects to root' do
+        expect(response).to redirect_to root_path
       end
 
       it 'js: returns 403' do
@@ -207,8 +207,8 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.text).to_not eq update_data[:text]
       end
 
-      it 'redirects to question' do
-        expect(response).to redirect_to question_path(question)
+      it 'redirects to root' do
+        expect(response).to redirect_to root_path
       end
 
       it 'js: returns 403' do
@@ -246,8 +246,8 @@ RSpec.describe AnswersController, type: :controller do
         expect { delete_request }.to_not change(question.answers, :count)
       end
 
-      it 'redirects to question' do
-        expect(delete_request).to redirect_to question_path(question)
+      it 'redirects to root' do
+        expect(delete_request).to redirect_to root_path
       end
 
       it 'js: returns 403' do

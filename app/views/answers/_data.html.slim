@@ -3,17 +3,17 @@ td
   - answer.files.each do |file|
     div  class='file' data-id=file.id
       = link_to file.filename.to_s, url_for(file)
-      - if current_user&.author_of? answer
+      - if can? :destroy, file
         span
-        = link_to 'X', file_path(id: file), method: :delete, remote: true
+          = link_to 'X', file_path(id: file), method: :delete, remote: true
   - answer.links.each do |link|
     div class='link' data-id=link.id
     = create_link link.name, link.url
   = render 'votes/vote', resource: answer
   = render 'comments/list', resource: answer
 td
-  - if !answer.best? && current_user&.author_of?(question)
+  - if !answer.best? && can?(:best, answer)
     = link_to 'Best', best_answer_path(answer), remote: true, method: :post
-  - if current_user&.author_of? answer
+  - if can? :edit, answer
     = link_to 'Edit', edit_answer_path(id: answer), remote: true
     = link_to 'Delete', answer_path(id: answer), remote: true, method: :delete, data: { confirm: 'Delete answer?' }

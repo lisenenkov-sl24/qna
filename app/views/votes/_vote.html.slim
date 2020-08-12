@@ -1,6 +1,6 @@
 .voting
   span.rating = resource.rating
-  - if current_user && !current_user&.author_of?(resource)
+  - if can? :vote, resource
     - vote = current_user.get_vote(resource)
     span class=['voted', vote ? nil : 'hidden']
       span.vote= vote == 1 ? '+' : '-'

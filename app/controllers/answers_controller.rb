@@ -5,6 +5,8 @@ class AnswersController < ApplicationController
 
   include Voted
 
+  authorize_resource
+
   def create
     @question = Question.find(params[:question_id])
     @new_answer = Answer.new(answer_params.merge(question: @question, author: current_user))
@@ -24,18 +26,10 @@ class AnswersController < ApplicationController
   def best
     @question = @answer.question
 
-    unless current_user&.author_of? @question
-      respond_to do |format|
-        format.html { redirect_to @question, notice: 'Best answer can\'t be selected' }
-        format.js { render status: 403, js: "alert('Best answer can\\\'t be selected')}')" }
-      end
-      return
-    end
-
     @answer.update(best: true)
 
     respond_to do |format|
-      format.html { redirect_to @question, notice: 'Best question changed' }
+      format.html { redirect_to @question, notice: 'Best answer changed' }
       format.js
     end
   end
@@ -48,8 +42,6 @@ class AnswersController < ApplicationController
   end
 
   def update
-    return unless check_author 'Answer can\'t be updated.'
-
     respond_to do |format|
       if @answer.update(answer_params)
         format.html { redirect_to @answer.question }
@@ -62,8 +54,6 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    return unless check_author 'Answer can\'t be deleted.'
-
     @question = @answer.question
     @answer.destroy
     respond_to do |format|
@@ -87,17 +77,6 @@ class AnswersController < ApplicationController
     @edit_answer = @answer
     @question = @answer.question
     render 'questions/show'
-  end
-
-  def check_author(notice)
-    result = current_user.author_of? @answer
-    unless result
-      respond_to do |format|
-        format.html { redirect_to @answer.question, notice: notice }
-        format.js { render status: 403, js: "alert('#{helpers.j(notice)}')" }
-      end
-    end
-    result
   end
 
   def publish_answer

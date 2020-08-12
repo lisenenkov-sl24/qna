@@ -3,6 +3,8 @@ class CommentsController < ApplicationController
   before_action :find_parent
   after_action :publish_comment
 
+  authorize_resource
+
   def create
     @comment = Comment.new(comment_params.merge(commentable: @commentable, user: current_user))
     comment_saved = @comment.save

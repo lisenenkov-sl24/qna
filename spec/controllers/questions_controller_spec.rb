@@ -201,8 +201,8 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question).to_not have_attributes update_data.slice(:title, :body)
       end
 
-      it 'redirects to question' do
-        expect(question).to redirect_to question
+      it 'redirects to root' do
+        expect(question).to redirect_to root_path
       end
 
       it 'js: returns 403' do
@@ -237,8 +237,8 @@ RSpec.describe QuestionsController, type: :controller do
         expect { delete_request }.to_not change(Question, :count)
       end
 
-      it 'redirects to questions' do
-        expect(delete_request).to redirect_to questions_path
+      it 'redirects to root' do
+        expect(delete_request).to redirect_to root_path
       end
     end
   end

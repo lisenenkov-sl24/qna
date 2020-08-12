@@ -5,6 +5,6 @@ table.answers.table.table-hover
         = render 'answers/form', answer: @edit_answer, question: @question
       - else
         = render 'answers/data', answer: answer, question: @question
-  -if user_signed_in?
+  -if can? :create, Answer
     tr class='new-answer'
       = render 'answers/form', answer: new_answer, question: @question

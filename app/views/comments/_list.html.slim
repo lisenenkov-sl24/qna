@@ -1,7 +1,7 @@
 .comments
   .list
     = render resource.comments
-  - if user_signed_in?
+  - if can? :create, Comment
     - comment = new_comment(resource)
     = render 'shared/errors', resource: comment
     = form_for [resource, comment] do |f|
