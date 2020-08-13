@@ -4,16 +4,10 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html { redirect_to request.referrer || root_url, alert: exception.message }
       format.js { render status: 403, js: "alert('#{helpers.j(exception.message)}')" }
+      format.json { render status: 403 }
     end
   end
 
-  check_authorization unless: :skip_authorization?
+  check_authorization unless: :devise_controller?
 
-  private
-
-  def skip_authorization?
-    return true if devise_controller?
-
-    false
-  end
 end

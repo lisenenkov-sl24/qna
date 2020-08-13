@@ -24,13 +24,13 @@ class Ability
     define_guest_abilities
     can :create, [Question, Answer, Comment]
 
-    can %i[edit update destroy], [Question, Answer], author: user
+    can %i[edit update destroy], [Question, Answer], author_id: user.id
     can %i[vote unvote], [Question, Answer] do |resource|
-      !user.author_of? resource
+      resource.author_id != user.id
     end
 
-    can :destroy, ActiveStorage::Attachment, record: { author: user }
-    can :best, Answer, question: { author: user }
+    can :destroy, ActiveStorage::Attachment, record: { author_id: user.id }
+    can :best, Answer, question: { author_id: user.id }
   end
 
   def define_admin_abilities
