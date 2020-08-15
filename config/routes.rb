@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  use_doorkeeper
   devise_for :users, controllers: { omniauth_callbacks: 'oauth_callbacks' }
 
   root 'questions#index'
@@ -20,6 +21,20 @@ Rails.application.routes.draw do
 
   resources :rewards, only: [:index]
   resources :files, only: [:destroy]
+
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      resources :profiles, only: [] do
+        collection do
+          get :me
+          get :notme
+        end
+      end
+      resources :questions, only: %i[index show create update destroy] do
+        resources :answers, only: %i[index show create update destroy], shallow: true
+      end
+    end
+  end
 
   mount ActionCable.server => '/cable'
 end
