@@ -6,14 +6,14 @@ global.subscribe_question_details = function () {
     consumer.subscriptions.create({channel: 'AnswersChannel', question: questionId}, {
         received: function (data) {
             if (data.action == 'create') {
-                if (!$('.answers .answer[data-id=' + data.id + ']').empty()) {
+                if ($('.answers .answer[data-id=' + data.id + ']').length > 0) {
                     return
                 }
 
-                if($('.answers .new-answer').empty()) {
-                    $('.answers').append(data.data)
-                }else {
+                if ($('.answers .new-answer').length) {
                     $('.answers .new-answer').before(data.data)
+                } else {
+                    $('.answers').append(data.data)
                 }
             }
         }

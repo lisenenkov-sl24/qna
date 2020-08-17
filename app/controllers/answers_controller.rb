@@ -82,6 +82,8 @@ class AnswersController < ApplicationController
   def publish_answer
     return if @new_answer.errors.any?
 
+    NewAnswerService.new.new_answer(@new_answer)
+
     render_data = helpers.content_tag :tr, class: 'answer', data: { id: @new_answer.id } do
       ApplicationController.render(partial: 'answers/channel_data',
                                    locals: { answer: @new_answer, question: @question })

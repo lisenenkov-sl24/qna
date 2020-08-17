@@ -8,6 +8,9 @@ RSpec.describe Question, type: :model do
   it { should have_many(:votes).dependent(:destroy) }
   it { should have_many(:comments).dependent(:destroy) }
 
+  it { should have_many(:question_subscriptions).dependent(:destroy) }
+  it { should have_many(:subscribed_users).through(:question_subscriptions) }
+
   it { should validate_presence_of :title }
   it { should validate_presence_of :body }
 
@@ -17,6 +20,11 @@ RSpec.describe Question, type: :model do
 
   it_behaves_like 'Model Votable' do
     let!(:votable) { create :question }
+  end
+
+  it 'subscribed after created question' do
+    question = create :question
+    expect(question.subscribed_users.where(id: question.author)).to exist
   end
 
 end

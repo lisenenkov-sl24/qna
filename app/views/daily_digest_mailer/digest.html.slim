@@ -1,0 +1,8 @@
+h1 Daily digest
+p= "Hello #{@user.email}"
+h5 New questions
+- cache do
+  ul
+    - Question.recent(1.day).each do |question|
+      li
+        = link_to question.title, question_url(question)
