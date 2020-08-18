@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :question_subscription do
+  factory :subscription do
     question
     user
   end

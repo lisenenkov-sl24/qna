@@ -22,8 +22,8 @@ class Ability
 
   def define_user_abilities(user)
     define_guest_abilities
-    can :create, [Question, Answer, Comment]
-    can %i[create destroy], [QuestionSubscription]
+    can :create, [Question, Answer, Comment, Subscription]
+    can %i[destroy], Subscription, user_id: user.id
 
     can %i[edit update destroy], [Question, Answer], author_id: user.id
     can %i[vote unvote], [Question, Answer] do |resource|

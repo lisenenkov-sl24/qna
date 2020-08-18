@@ -24,7 +24,7 @@ feature 'User subscribes a question', js: true do
   end
 
   scenario 'authorized user can unsubscribe' do
-    question.question_subscriptions.create(user: user)
+    question.subscriptions.create(user: user)
     sign_in(user)
     visit question_path(question)
 

@@ -8,6 +8,7 @@ class Answer < ApplicationRecord
   has_many_attached :files, dependent: :destroy
 
   before_save :before_save_set_best
+  after_create :after_create_send_email
 
   accepts_nested_attributes_for :links, allow_destroy: true, reject_if: :all_blank
 
@@ -25,5 +26,9 @@ class Answer < ApplicationRecord
     end
 
     question.reward&.update!(user: author)
+  end
+
+  def after_create_send_email
+    NewAnswerService.new.new_answer(self)
   end
 end

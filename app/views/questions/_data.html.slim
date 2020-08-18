@@ -22,7 +22,7 @@
 .card-footer
   = render 'votes/vote', resource: @question
   .subscribe
-    = render 'question_subscription/data', question: @question
+    = render 'subscriptions/data', question: @question
 - if can? :edit, @question
   .card-body
     = link_to 'Edit', edit_question_path(@question), remote: true, class: 'btn btn-primary btn-sm'

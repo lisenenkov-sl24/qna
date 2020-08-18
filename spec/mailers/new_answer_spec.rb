@@ -4,7 +4,7 @@ RSpec.describe NewAnswerMailer, type: :mailer do
   describe "new_answer" do
     let!(:user) { create :user }
     let!(:question) { create :question }
-    let!(:qs) { create :question_subscription, user: user, question: question }
+    let!(:qs) { create :subscription, user: user, question: question }
     let(:mail) { NewAnswerMailer.new_answer(qs) }
 
     it "renders the headers" do

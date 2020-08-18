@@ -22,7 +22,7 @@ Rails.application.routes.draw do
       end
       resources :comments, only: %i[create]
     end
-    resources :question_subscription, only: %i[create destroy], path: 'subscribe'
+    resources :subscriptions, only: %i[create destroy], path: 'subscribe'
   end
 
   resources :rewards, only: [:index]

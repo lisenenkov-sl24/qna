@@ -8,8 +8,8 @@ RSpec.describe Question, type: :model do
   it { should have_many(:votes).dependent(:destroy) }
   it { should have_many(:comments).dependent(:destroy) }
 
-  it { should have_many(:question_subscriptions).dependent(:destroy) }
-  it { should have_many(:subscribed_users).through(:question_subscriptions) }
+  it { should have_many(:subscriptions).dependent(:destroy) }
+  it { should have_many(:subscribed_users).through(:subscriptions) }
 
   it { should validate_presence_of :title }
   it { should validate_presence_of :body }
@@ -25,6 +25,20 @@ RSpec.describe Question, type: :model do
   it 'subscribed after created question' do
     question = create :question
     expect(question.subscribed_users.where(id: question.author)).to exist
+  end
+
+  describe 'subscription' do
+    let(:user) { create :user }
+    let(:question) { create :question }
+
+    it 'returns user subscription if exists' do
+      subscription = question.subscriptions.create(user: user)
+      expect(question.subscription(user)).to eq subscription
+    end
+
+    it 'returns nil otherwise' do
+      expect(question.subscription(user)).to be_nil
+    end
   end
 
 end

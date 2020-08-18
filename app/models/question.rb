@@ -4,8 +4,8 @@ class Question < ApplicationRecord
   has_many :links, dependent: :destroy, as: :linkable
   has_one :reward, dependent: :destroy
   has_many :comments, as: :commentable, dependent: :destroy
-  has_many :question_subscriptions, dependent: :destroy
-  has_many :subscribed_users, through: :question_subscriptions, source: :user
+  has_many :subscriptions, dependent: :destroy
+  has_many :subscribed_users, through: :subscriptions, source: :user
 
   include Votable
   has_many_attached :files, dependent: :destroy
@@ -17,7 +17,11 @@ class Question < ApplicationRecord
 
   validates :title, :body, presence: true
 
-  scope :recent, -> (period) { where('created_at > ?', period.ago) }
+  scope :recent, ->(period) { where('created_at > ?', period.ago) }
+
+  def subscription(user)
+    subscriptions.find_by(user: user)
+  end
 
   private
 

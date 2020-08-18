@@ -1,4 +1,4 @@
-class QuestionSubscription < ApplicationRecord
+class Subscription < ApplicationRecord
   belongs_to :question
   belongs_to :user
 
