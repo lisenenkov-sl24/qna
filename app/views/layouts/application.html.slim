@@ -16,6 +16,8 @@ html
         span class='navbar-toggler-icon'
       div class='collapse navbar-collapse' id='navbarSupportedContent'
         ul class='nav navbar-nav navbar-right'
+          li class='nav-item'
+            = link_to 'Search', search_index_path, class: 'nav-link'
           - if user_signed_in?
             li class='nav-item dropdown'
               a class='nav-link dropdown-toggle' href='#' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'
