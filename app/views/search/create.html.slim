@@ -2,7 +2,7 @@
 - if @items.present?
   table
     - @items.each do |item|
-      - item = item_params(item)
+      - item = search_item_params(item)
       tr
         td= item[:type]
         td
