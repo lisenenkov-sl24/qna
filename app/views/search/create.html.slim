@@ -1,0 +1,14 @@
+= render 'form'
+- if @items.present?
+  table
+    - @items.each do |item|
+      - item = search_item_params(item)
+      tr
+        td= item[:type]
+        td
+          - if item[:link]
+            = link_to item[:title], item[:link]
+          - else
+            = item[:title]
+- else
+  div Not found

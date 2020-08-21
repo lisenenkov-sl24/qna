@@ -40,3 +40,7 @@
 yarn-debug.log*
 .yarn-integrity
 /.idea
+
+# sphinx
+/db/sphinx
+/config/*.sphinx.conf

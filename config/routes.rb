@@ -25,6 +25,8 @@ Rails.application.routes.draw do
     resources :subscriptions, only: %i[create destroy], path: 'subscribe'
   end
 
+  resources :search, only: %i[index create]
+
   resources :rewards, only: [:index]
   resources :files, only: [:destroy]
 
