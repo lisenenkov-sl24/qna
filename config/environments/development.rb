@@ -22,6 +22,7 @@ Rails.application.configure do
     config.public_file_server.headers = {
       'Cache-Control' => "public, max-age=#{2.days.to_i}"
     }
+    config.cache_store = :redis_cache_store, { url: "redis://localhost:6379/0/cache", expires_in: 90.minutes }
   else
     config.action_controller.perform_caching = false
 

@@ -49,6 +49,8 @@ gem 'sidekiq'
 gem 'sinatra', require: false
 gem 'whenever'
 
+gem 'redis'
+
 gem 'mysql2'
 gem 'thinking-sphinx'
 

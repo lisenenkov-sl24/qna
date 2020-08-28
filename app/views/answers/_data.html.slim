@@ -1,14 +1,15 @@
 td
-  div class='show' = answer.text
-  - answer.files.each do |file|
-    div  class='file' data-id=file.id
-      = link_to file.filename.to_s, url_for(file)
-      - if can? :destroy, file
-        span
-          = link_to 'X', file_path(id: file), method: :delete, remote: true
-  - answer.links.each do |link|
-    div class='link' data-id=link.id
-    = create_link link.name, link.url
+  - cache answer do
+    div class='show' = answer.text
+    - answer.files.each do |file|
+      div class='file' data-id=file.id
+        = link_to file.filename.to_s, url_for(file)
+        - if can? :destroy, file
+          span
+            = link_to 'X', file_path(id: file), method: :delete, remote: true
+    - answer.links.each do |link|
+      div class='link' data-id=link.id
+      = create_link link.name, link.url
   = render 'votes/vote', resource: answer
   = render 'comments/list', resource: answer
 td

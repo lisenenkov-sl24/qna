@@ -1,24 +1,25 @@
-.card-header
-  = @question.title
-.card-body
-  p.card-text
-    = @question.body
-- if @question.files.count > 0
-  .card-body.files
-    - @question.files.each do |file|
-      div class='file' data-id=file.id
-        = link_to file.filename.to_s, url_for(file)
-        - if can?(:destroy, file)
-          span.ml-2
-            = link_to 'X', file_path(id: file), method: :delete, remote: true
-- if @question.links.count > 0
-  .card-body.links
-    - @question.links.each do |link|
-      div class='link' data-id=link.id
-        = create_link link.name, link.url
-- if @question.reward
-  .link.card-body
-    = "Reward: #{@question.reward.name}"
+- cache @question do
+  .card-header
+    = @question.title
+  .card-body
+    p.card-text
+      = @question.body
+  - if @question.files.count > 0
+    .card-body.files
+      - @question.files.each do |file|
+        div class='file' data-id=file.id
+          = link_to file.filename.to_s, url_for(file)
+          - if can?(:destroy, file)
+            span.ml-2
+              = link_to 'X', file_path(id: file), method: :delete, remote: true
+  - if @question.links.count > 0
+    .card-body.links
+      - @question.links.each do |link|
+        div class='link' data-id=link.id
+          = create_link link.name, link.url
+  - if @question.reward
+    .link.card-body
+      = "Reward: #{@question.reward.name}"
 .card-footer
   = render 'votes/vote', resource: @question
   .subscribe
